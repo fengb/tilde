@@ -16,8 +16,12 @@ class ApplicationController < ActionController::Base
   private
   def spawn(port)
     fork do
-      loop do
-        repl
+      server = TCPServer.new('127.0.0.1', port)
+      while connection = server.accept
+        $stderr.puts "Accepted"
+        response = execute([connection.gets, connection.gets, connection.gets].join("\n"))
+        connection.print(response)
+        connection.close
       end
     end
   end
@@ -27,9 +31,8 @@ class ApplicationController < ActionController::Base
     "Hi"
   end
 
-  def repl
+  def execute(body)
     # TODO: implement me
-    $stderr.puts "I'm alive!"
-    sleep 10
+    body
   end
 end
