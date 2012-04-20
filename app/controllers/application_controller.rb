@@ -71,7 +71,7 @@ class ApplicationController < ActionController::Base
 
   def communicate(port, message)
     s = TCPSocket.open '127.0.0.1', port
-    s.puts command
+    s.puts message
 
     readall(s)
   end
