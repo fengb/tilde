@@ -1,49 +1,15 @@
+// This is a manifest file that'll be compiled into application.js, which will include all the files
+// listed below.
+//
+// Any JavaScript/Coffee file within this directory, lib/assets/javascripts, vendor/assets/javascripts,
+// or vendor/assets/javascripts of plugins, if any, can be referenced here using a relative path.
+//
+// It's not advisable to add code directly here, but if you do, it'll appear at the bottom of the
+// the compiled file.
+//
+// WARNING: THE FIRST BLANK LINE MARKS THE END OF WHAT'S TO BE PROCESSED, ANY BLANK LINE SHOULD
+// GO AFTER THE REQUIRES BELOW.
 //
 //= require jquery
 //= require jquery_ujs
 //= require_tree .
-
-$(function () {
-  var jqconsole = $('#console').jqconsole('', '>> ');
-  var startPrompt = function () {
-    jqconsole.Prompt(true, function (input) {
-      if (input == "clear") {
-        jqconsole.Reset();
-        startPrompt();
-      } else {
-        $.ajax({
-          headers: {
-            'X-Transaction': 'POST Example',
-            'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
-          },
-          data: { command: input, commit: 'Execute' },
-          url: '/tilde/command',
-          type: 'post',
-          dataType: 'json',
-          success: function(e) {
-            jqconsole.Write(e.response + '\n', 'jqconsole-output');
-            startPrompt();
-          },
-          failure: function(e) {
-            jqconsole.Write('There was an error with your request' + '\n', 'jqconsole-output');
-          }
-        }); 
-      }
-    });
-  };
-  startPrompt();
- 
-  var open = false;
-  $(document).keydown(function(e){
-    if (e.keyCode == 192) { 
-      open = !open
-      $('#console').animate({
-        top: open ? "0" : "-505"
-      });
-      jqconsole.Focus();
-      return false;
-    }
-  });
- 
-}); 
-
