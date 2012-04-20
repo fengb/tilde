@@ -14,7 +14,7 @@ class TildeController < ApplicationController
 
   # TODO: remove once zombie process are properly removed
   def flush
-    `pkill #{$$}`
+    `pkill -P #{$$}`
     render :text => 'Success!'
   end
 
