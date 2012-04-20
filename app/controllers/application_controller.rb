@@ -17,13 +17,33 @@ class ApplicationController < ActionController::Base
   def spawn(port)
     fork do
       server = TCPServer.new('127.0.0.1', port)
-      while connection = server.accept
-        $stderr.puts "Accepted"
-        response = execute([connection.gets, connection.gets, connection.gets].join("\n"))
-        connection.print(response)
-        connection.close
+      context = binding
+      while conn = server.accept
+        begin
+          # eval must occur in here for local vars to remain in scope
+          payload = get_request_body(conn)
+          $stderr.puts payload
+          response = eval(payload, context)
+
+          conn.print("Good response: #{response.inspect}\n")
+        rescue => e
+          conn.print ("Exception Encountered:\n")
+          conn.print e.message
+        ensure
+          conn.close
+        end
       end
     end
+  end
+
+  def get_request_body request
+    while line = request.gets and line !~ /^\s*$/
+      if line =~ /Content-Length/
+        content_length = line.match(/\d+/).to_s.to_i
+      end
+    end
+
+    request.read(content_length)
   end
 
   def communicate(port)
@@ -31,8 +51,4 @@ class ApplicationController < ActionController::Base
     "Hi"
   end
 
-  def execute(body)
-    # TODO: implement me
-    body
-  end
 end
