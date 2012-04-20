@@ -23,6 +23,9 @@ $(function () {
           success: function(e) {
             jqconsole.Write(e.response + '\n', 'jqconsole-output');
             startPrompt();
+          },
+          failure: function(e) {
+            jqconsole.Write('There was an error with your request' + '\n', 'jqconsole-output');
           }
         }); 
       }
@@ -30,13 +33,14 @@ $(function () {
   };
   startPrompt();
  
-  var open = true;
+  var open = false;
   $(document).keydown(function(e){
     if (e.keyCode == 192) { 
       open = !open
       $('#console').animate({
-        top: open ? "0" : "-500"
+        top: open ? "0" : "-505"
       });
+      jqconsole.Focus();
       return false;
     }
   });
