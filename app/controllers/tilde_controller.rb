@@ -51,7 +51,7 @@ class TildeController < ApplicationController
           conn.print $stderr.string
           conn.print $stdout.string
           conn.print "=> #{ret.inspect}"
-        rescue => e
+        rescue StandardError, ScriptError => e
           conn.puts "#{e.class}: #{e.message}"
           e.backtrace.each do |line|
             conn.puts "\t" << line
