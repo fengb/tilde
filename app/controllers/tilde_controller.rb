@@ -41,6 +41,7 @@ class TildeController < ApplicationController
       while conn = server.accept
         begin
           # eval must occur in here for local vars to remain in scope
+          IO.select([conn])
           payload = conn.read_nonblock(READ_MAX)
 
           $stderr = StringIO.new
