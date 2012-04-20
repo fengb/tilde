@@ -31,12 +31,9 @@ class TildeController < ApplicationController
 
   def port
     if session[:tilde_port].nil?
-      p = nil
       begin
-        p = (3000+rand(1000))
-      end while port_used?(p)
-
-      session[:tilde_port] = p
+        session[:tilde_port] = (3000+rand(1000))
+      end while port_used?(session[:tilde_port])
     end
     session[:tilde_port]
   end
@@ -77,6 +74,8 @@ class TildeController < ApplicationController
           conn.puts "#{e.class}: #{e.message}"
           e.backtrace.each do |line|
             conn.puts "\t" << line
+
+            # Rest of stacktrace lives beyond the eval line so we ignore them
             break if line =~ /#{__FILE__.gsub('.', '\.').gsub('/', '\/')}.*eval/
           end
         ensure
