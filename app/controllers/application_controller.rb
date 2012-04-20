@@ -2,12 +2,13 @@ class ApplicationController < ActionController::Base
   protect_from_forgery
 
   def command
-    if !spawned?
-      self.port = 3001
-      spawn(port)
+    if request.post?
+      if !spawned?
+        self.port = 3001
+        spawn(port)
+      end
+      @response = communicate(port, params[:command])
     end
-    response = communicate(port)
-    render :text => response
   end
 
   private
@@ -55,7 +56,7 @@ class ApplicationController < ActionController::Base
     request.read(content_length)
   end
 
-  def communicate(port)
+  def communicate(port, command)
     # TODO: implement me
     "Hi"
   end
