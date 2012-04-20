@@ -26,3 +26,10 @@ $(function () {
   startPrompt();
 }); 
 
+$(document).keydown(function(e){
+  if (e.keyCode == 192) { 
+    $('#console').slideToggle();
+    return false;
+  }
+});
+
