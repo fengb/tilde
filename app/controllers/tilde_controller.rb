@@ -25,6 +25,10 @@ class TildeController < ApplicationController
     false
   end
 
+  def reload_session
+    session = ActiveRecord::SessionStore::Session.last
+  end
+
   def port
     if session[:tilde_port].nil?
       p = nil
