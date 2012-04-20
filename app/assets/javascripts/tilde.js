@@ -3,7 +3,8 @@
 //= require jquery_ujs
 
 $(function () {
-  var tildeconsole = $('tilde').jqconsole('', '>> ');
+  var $tilde = $('#tilde');
+  var tildeconsole = $tilde.jqconsole('', '>> ');
   var startPrompt = function () {
     tildeconsole.Prompt(true, function (input) {
       if (input == "clear") {
@@ -16,7 +17,7 @@ $(function () {
             'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
           },
           data: { command: input, commit: 'Execute' },
-          url: '/tilde/command',
+          url: $tilde.data('commandUrl'),
           type: 'post',
           dataType: 'json',
           success: function(e) {
