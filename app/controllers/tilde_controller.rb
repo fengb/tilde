@@ -8,6 +8,7 @@ class TildeController < ApplicationController
         sleep(1) # Wait for fork to catch up...
       end
       @response = communicate(port, params[:command])
+      @command = params[:command]
     end
   end
 
