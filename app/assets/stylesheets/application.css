@@ -17,6 +17,7 @@ html, body {
   height: 500px;
   background-color: rgba(0,0,0,0.80);
   border-bottom: 5px solid red;
+  top: -505px;
 }
 .jqconsole { padding: 10px; }
 .jqconsole-cursor { background-color: gray; }

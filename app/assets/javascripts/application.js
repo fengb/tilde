@@ -33,7 +33,7 @@ $(function () {
   };
   startPrompt();
  
-  var open = true;
+  var open = false;
   $(document).keydown(function(e){
     if (e.keyCode == 192) { 
       open = !open
