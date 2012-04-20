@@ -18,9 +18,9 @@ $(function () {
         dataType: 'json',
         success: function(e) {
           jqconsole.Write(e.response + '\n', 'jqconsole-output');
+          startPrompt();
         }
       }); 
-      startPrompt();
     });
   };
   startPrompt();
@@ -28,6 +28,7 @@ $(function () {
 
 $(document).keydown(function(e){
   if (e.keyCode == 192) { 
+    jqconsole.MoveToEnd();
     $('#console').slideToggle();
     return false;
   }
