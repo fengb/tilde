@@ -1,0 +1,7 @@
+<form method='post'>
+  <%= text_field_tag 'command', @command %>
+  <%= submit_tag 'Execute' %>
+</form>
+<% if @response %>
+  <pre><%= @response %></pre>
+<% end %>
