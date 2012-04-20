@@ -6,6 +6,7 @@ class TildeController < ApplicationController
 
       @response = communicate(port, params[:command])
       @command = params[:command]
+      render :json => { "response" => @response }
     end
   end
 
