@@ -1,14 +1,3 @@
-class ConvenienceStore
-  def self.[](key)
-    (@cache ||= {})[key]
-  end
-
-  def self.[]=(key, value)
-    (@cache ||= {})[key] = value
-  end
-end
-
-
 class TildeController < ApplicationController
   def command
     if request.post?
@@ -23,7 +12,7 @@ class TildeController < ApplicationController
 
   # TODO: remove once zombie process are properly removed
   def flush
-    `pkill #{$$}`
+    `pkill -P #{$$}`
     render :text => 'Success!'
   end
 
@@ -44,7 +33,6 @@ class TildeController < ApplicationController
       end while port_used?(p)
 
       session[:tilde_port] = p
-      ports.add(p)
     end
     session[:tilde_port]
   end
@@ -58,6 +46,8 @@ class TildeController < ApplicationController
   end
 
   def spawn(port)
+    ports.add(port)
+
     fork do
       first_run = true
       server = TCPServer.new('127.0.0.1', port)
@@ -83,6 +73,7 @@ class TildeController < ApplicationController
           conn.puts "#{e.class}: #{e.message}"
           e.backtrace.each do |line|
             conn.puts "\t" << line
+            break if line =~ /#{__FILE__.gsub('.', '\.').gsub('/', '\/')}.*eval/
           end
         ensure
           conn.close
