@@ -10,8 +10,6 @@ end
 
 
 class TildeController < ApplicationController
-  attr_accessor :_
-
   def command
     if request.post?
       # fork and wait for it to catch up
@@ -60,9 +58,8 @@ class TildeController < ApplicationController
   end
 
   def spawn(port)
-    $stderr.puts "Spawning child on 127.0.0.1:#{port}"
-
     fork do
+      first_run = true
       server = TCPServer.new('127.0.0.1', port)
       context = binding
       while conn = server.accept
@@ -72,13 +69,16 @@ class TildeController < ApplicationController
 
           $stderr = StringIO.new
           $stdout = StringIO.new
-          _ = eval(payload, context)
+          result = eval(payload, context)
           $stderr.close
           $stdout.close
 
+          conn.print "Creating console on :#{port}\n" if first_run
           conn.print $stderr.string
           conn.print $stdout.string
-          conn.print "=> #{_.inspect}"
+          conn.print "=> #{result.inspect}"
+
+          first_run = false
         rescue StandardError, ScriptError => e
           conn.puts "#{e.class}: #{e.message}"
           e.backtrace.each do |line|
