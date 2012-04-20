@@ -1,3 +1,14 @@
+class ConvenienceStore
+  def self.[](key)
+    (@cache ||= {})[key]
+  end
+
+  def self.[]=(key, value)
+    (@cache ||= {})[key] = value
+  end
+end
+
+
 class TildeController < ApplicationController
   def command
     if request.post?
@@ -17,22 +28,33 @@ class TildeController < ApplicationController
   end
 
   private
-  def port
-    session[:tilde_ports] ||= {}
-    session[:tilde_ports][console] ||= (3000+rand(1000))
-  end
-
-  # todo multiple consoles
-  def console
-    nil
-  end
-
-  def spawned?
+  def port_used?(port)
     TCPSocket.open('localhost', port).close
     true
   rescue Errno::ECONNREFUSED => e
     # No server there!
     false
+  end
+
+  def port
+    if session[:tilde_port].nil?
+      p = nil
+      begin
+        p = (3000+rand(1000))
+      end while port_used?(p)
+
+      session[:tilde_port] = p
+      ports.add(p)
+    end
+    session[:tilde_port]
+  end
+
+  def ports
+    (ConvenienceStore[:ports] ||= Set.new)
+  end
+
+  def spawned?
+    port_used?(port)
   end
 
   def spawn(port)
