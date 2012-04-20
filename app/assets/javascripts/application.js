@@ -29,13 +29,17 @@ $(function () {
     });
   };
   startPrompt();
+ 
+  var open = true;
+  $(document).keydown(function(e){
+    if (e.keyCode == 192) { 
+      open = !open
+      $('#console').animate({
+        top: open ? "0" : "-500"
+      });
+      return false;
+    }
+  });
+ 
 }); 
-
-$(document).keydown(function(e){
-  if (e.keyCode == 192) { 
-    jqconsole.MoveToEnd();
-    $('#console').slideToggle();
-    return false;
-  }
-});
 
