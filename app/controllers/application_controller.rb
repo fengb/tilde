@@ -17,10 +17,8 @@ class ApplicationController < ActionController::Base
   end
 
   def spawned?
-    require 'securerandom'
-    check = SecureRandom.base64
-    response = communicate(port, "puts \"#{check}\"")
-    response.strip == check.strip
+    TCPSocket.open('localhost', port).close
+    true
   rescue Errno::ECONNREFUSED => e
     # No server there!
     false
