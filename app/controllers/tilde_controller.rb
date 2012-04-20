@@ -4,7 +4,6 @@ class TildeController < ApplicationController
   def command
     if request.post?
       # fork and wait for it to catch up
-      $stderr.puts "spawned? == #{spawned?}"
       (spawn(port) and sleep(1)) unless spawned?
 
       @response = communicate(port, params[:command])
