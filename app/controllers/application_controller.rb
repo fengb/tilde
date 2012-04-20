@@ -6,6 +6,7 @@ class ApplicationController < ActionController::Base
       if !spawned?
         self.port = 3001
         spawn(port)
+        sleep(1) # Wait for fork to catch up...
       end
       @response = communicate(port, params[:command])
     end
@@ -21,7 +22,15 @@ class ApplicationController < ActionController::Base
   end
 
   def spawned?
-    !port.nil?
+    return port if port.nil?
+
+    require 'securerandom'
+    check = SecureRandom.base64
+    response = communicate(port, "puts \"#{check}\"")
+    response.strip == check.strip
+  rescue Errno::ECONNREFUSED => e
+    # No server there!
+    false
   end
 
   def spawn(port)
@@ -47,18 +56,22 @@ class ApplicationController < ActionController::Base
   end
 
   def get_request_body request
-    while line = request.gets and line !~ /^\s*$/
-      if line =~ /Content-Length/
-        content_length = line.match(/\d+/).to_s.to_i
-      end
-    end
+    request.gets
+  end
 
-    request.read(content_length)
+  def readall(fileio)
+    all = []
+    while line = fileio.gets
+      all << line
+    end
+    all.join('')
   end
 
   def communicate(port, command)
-    # TODO: implement me
-    "Hi"
+    s = TCPSocket.open '127.0.0.1', port
+    s.puts command
+
+    readall(s)
   end
 
 end
