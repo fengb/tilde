@@ -34,6 +34,8 @@ class ApplicationController < ActionController::Base
   end
 
   def spawn(port)
+    $stderr.puts "Spawning child on 127.0.0.1:#{port}"
+
     fork do
       server = TCPServer.new('127.0.0.1', port)
       context = binding
@@ -44,7 +46,7 @@ class ApplicationController < ActionController::Base
           $stderr.puts payload
           response = eval(payload, context)
 
-          conn.print("Good response: #{response.inspect}\n")
+          conn.print("Response: #{response}")
         rescue => e
           conn.print ("Exception Encountered:\n")
           conn.print e.message
@@ -67,11 +69,21 @@ class ApplicationController < ActionController::Base
     all.join('')
   end
 
-  def communicate(port, command)
+  def communicate(port, message)
     s = TCPSocket.open '127.0.0.1', port
     s.puts command
 
     readall(s)
+  end
+
+  def get_console_port(name = nil)
+    session[:tilde] ||= {}
+    session[:tilde][:consoles] ||= {}
+
+    unless session[:tilde][:consoles][name]
+      session[:tilde][:consoles][name] = (3000+rand(1000))
+    end
+    session[:tilde][:consoles][name]
   end
 
 end
