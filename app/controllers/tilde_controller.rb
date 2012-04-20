@@ -73,6 +73,7 @@ class TildeController < ApplicationController
           conn.puts "#{e.class}: #{e.message}"
           e.backtrace.each do |line|
             conn.puts "\t" << line
+            break if line =~ /#{__FILE__.gsub('.', '\.').gsub('/', '\/')}.*eval/
           end
         ensure
           conn.close
