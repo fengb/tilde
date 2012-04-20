@@ -6,40 +6,22 @@
 html, body {
   background-color: #333;
   color: white;
-  font-family: monospace;
-  font-size: 16px;
   margin: 0;
   padding: 0;
 }
 #console {
   position: absolute;
+  font-family: monospace;
+  font-size: 14px;
   width: 100%;
   height: 500px;
-  background-color:black;
+  background-color: rgba(0,0,0,0.60);
 }
-.jqconsole {
-    padding: 10px;
-}
-.jqconsole-cursor {
-    background-color: gray;
-}
-.jqconsole-blurred .jqconsole-cursor {
-    background-color: #666;
-}
-.jqconsole-prompt {
-    color: #0d0;
-}
-.jqconsole-old-prompt {
-    color: #0b0;
-    font-weight: normal;
-}
-.jqconsole-input {
-    color: #dd0;
-}
-.jqconsole-old-input {
-    color: #bb0;
-    font-weight: normal;
-}
-.jqconsole-output {
-    color: white;
-} 
+.jqconsole { padding: 10px; }
+.jqconsole-cursor { background-color: gray; }
+.jqconsole-blurred .jqconsole-cursor { background-color: #666; }
+.jqconsole-prompt { color: #0d0; }
+.jqconsole-old-prompt { color: #0b0; font-weight: normal; }
+.jqconsole-input { color: #dd0; }
+.jqconsole-old-input { color: #bb0; font-weight: normal; }
+.jqconsole-output { white-space: pre-wrap; color: white; } 
