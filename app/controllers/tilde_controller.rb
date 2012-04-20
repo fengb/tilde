@@ -1,4 +1,6 @@
 class TildeController < ApplicationController
+  READ_MAX = 4096
+
   def command
     if request.post?
       if !spawned?
@@ -31,7 +33,7 @@ class TildeController < ApplicationController
       while conn = server.accept
         begin
           # eval must occur in here for local vars to remain in scope
-          payload = get_request_body(conn)
+          payload = conn.read_nonblock(READ_MAX)
 
           $stderr = StringIO.new
           $stdout = StringIO.new
@@ -44,7 +46,9 @@ class TildeController < ApplicationController
           conn.print "=> #{ret.inspect}"
         rescue => e
           conn.puts "#{e.class}: #{e.message}"
-          conn.puts "\t" + e.backtrace.join("\n\t")
+          e.backtrace.each do |line|
+            conn.puts "\t" << line
+          end
         ensure
           conn.close
         end
@@ -52,33 +56,10 @@ class TildeController < ApplicationController
     end
   end
 
-  def get_request_body request
-    request.gets
-  end
-
-  def readall(fileio)
-    all = []
-    while line = fileio.gets
-      all << line
-    end
-    all.join('')
-  end
-
   def communicate(port, message)
     TCPSocket.open '127.0.0.1', port do |socket|
       socket.puts message
-      readall(socket)
+      socket.read
     end
   end
-
-  def get_console_port(name = nil)
-    session[:tilde] ||= {}
-    session[:tilde][:consoles] ||= {}
-
-    unless session[:tilde][:consoles][name]
-      session[:tilde][:consoles][name] = (3000+rand(1000))
-    end
-    session[:tilde][:consoles][name]
-  end
-
 end
