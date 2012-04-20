@@ -2,16 +2,29 @@ class ApplicationController < ActionController::Base
   protect_from_forgery
 
   def command
-    # TODO: implement me
-    spawned = false
     port = get_console_port
 
-    spawn(port) if !spawned
-    response = communicate(port)
+    spawn(port) if !spawned?(port)
+    response = communicate(port, params[:command])
     render :text => response
   end
 
   private
+  def port
+    session[:tilde_port]
+  end
+
+  def port=(val)
+    session[:tilde_port] = val
+  end
+
+  def spawned?(port)
+    TCPSocket.open('localhost', port).close
+    true
+  rescue
+    false
+  end
+
   def spawn(port)
     $stderr.puts "Spawning child on 127.0.0.1:#{port}"
 
@@ -25,7 +38,7 @@ class ApplicationController < ActionController::Base
           $stderr.puts payload
           response = eval(payload, context)
 
-          conn.print("Good response: #{response.inspect}\n")
+          conn.print("Response: #{response}")
         rescue => e
           conn.print ("Exception Encountered:\n")
           conn.print e.message
@@ -46,13 +59,12 @@ class ApplicationController < ActionController::Base
     request.read(content_length)
   end
 
-  def communicate(port)
-    # TODO: implement me
+  def communicate(port, message)
+    # @TODO
     "Hi"
   end
 
   def get_console_port(name = nil)
-    $stderr.print session[:tilde]
     session[:tilde] ||= {}
     session[:tilde][:consoles] ||= {}
 
