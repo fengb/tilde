@@ -2,11 +2,8 @@ class ApplicationController < ActionController::Base
   protect_from_forgery
 
   def command
-    # TODO: implement me
-    spawned = false
-    port = 3001
-
-    if !spawned
+    if !spawned?
+      self.port = 3001
       spawn(port)
     end
     response = communicate(port)
@@ -14,6 +11,18 @@ class ApplicationController < ActionController::Base
   end
 
   private
+  def port
+    session[:tilde_port]
+  end
+
+  def port=(val)
+    session[:tilde_port] = val
+  end
+
+  def spawned?
+    !port.nil?
+  end
+
   def spawn(port)
     fork do
       server = TCPServer.new('127.0.0.1', port)
