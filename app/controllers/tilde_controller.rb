@@ -10,6 +10,8 @@ end
 
 
 class TildeController < ApplicationController
+  attr_accessor :_
+
   def command
     if request.post?
       # fork and wait for it to catch up
@@ -70,13 +72,13 @@ class TildeController < ApplicationController
 
           $stderr = StringIO.new
           $stdout = StringIO.new
-          ret = eval(payload, context)
+          _ = eval(payload, context)
           $stderr.close
           $stdout.close
 
           conn.print $stderr.string
           conn.print $stdout.string
-          conn.print "=> #{ret.inspect}"
+          conn.print "=> #{_.inspect}"
         rescue StandardError, ScriptError => e
           conn.puts "#{e.class}: #{e.message}"
           e.backtrace.each do |line|
