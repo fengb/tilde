@@ -17,7 +17,13 @@ class TildeController < ApplicationController
 
   private
   def port
-    session[:tilde_port] ||= 4000
+    session[:tilde_ports] ||= {}
+    session[:tilde_ports][console] ||= (3000+rand(1000))
+  end
+
+  # todo multiple consoles
+  def console
+    nil
   end
 
   def spawned?
