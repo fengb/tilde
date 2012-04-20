@@ -3,10 +3,10 @@ class TildeController < ApplicationController
 
   def command
     if request.post?
-      if !spawned?
-        spawn(port)
-        sleep(1) # Wait for fork to catch up...
-      end
+      # fork and wait for it to catch up
+      $stderr.puts "spawned? == #{spawned?}"
+      (spawn(port) and sleep(1)) unless spawned?
+
       @response = communicate(port, params[:command])
       @command = params[:command]
     end
@@ -20,7 +20,8 @@ class TildeController < ApplicationController
 
   private
   def port
-    session[:tilde_port] ||= (3000+rand(1000))
+    #session[:tilde_port] ||= (3000+rand(1000))
+    return 4000
   end
 
   def spawned?
