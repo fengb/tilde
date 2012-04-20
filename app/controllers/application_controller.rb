@@ -4,7 +4,6 @@ class ApplicationController < ActionController::Base
   def command
     if request.post?
       if !spawned?
-        self.port = 3001
         spawn(port)
         sleep(1) # Wait for fork to catch up...
       end
@@ -14,16 +13,10 @@ class ApplicationController < ActionController::Base
 
   private
   def port
-    session[:tilde_port]
-  end
-
-  def port=(val)
-    session[:tilde_port] = val
+    session[:tilde_port] ||= (3000+rand(1000))
   end
 
   def spawned?
-    return port if port.nil?
-
     require 'securerandom'
     check = SecureRandom.base64
     response = communicate(port, "puts \"#{check}\"")
@@ -43,8 +36,13 @@ class ApplicationController < ActionController::Base
         begin
           # eval must occur in here for local vars to remain in scope
           payload = get_request_body(conn)
-          $stderr.puts payload
-          response = eval(payload, context)
+
+          $stderr = StringIO.new
+          $stdout = StringIO.new
+          ret = eval(payload, context)
+          $stderr.close
+          $stdout.close
+          response = [$stderr.string, $stdout.string, ret.inspect].join('')
 
           conn.print("Response: #{response}")
         rescue => e
