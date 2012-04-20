@@ -1,13 +1,45 @@
 /*
- * This is a manifest file that'll be compiled into application.css, which will include all the files
- * listed below.
- *
- * Any CSS and SCSS file within this directory, lib/assets/stylesheets, vendor/assets/stylesheets,
- * or vendor/assets/stylesheets of plugins, if any, can be referenced here using a relative path.
- *
- * You're free to add application-wide styles to this file and they'll appear at the top of the
- * compiled file, but it's generally better to create a new file per style scope.
- *
  *= require_self
  *= require_tree .
 */
+
+html, body {
+  background-color: #333;
+  color: white;
+  font-family: monospace;
+  font-size: 16px;
+  margin: 0;
+  padding: 0;
+}
+#console {
+  position: absolute;
+  width: 100%;
+  height: 500px;
+  background-color:black;
+}
+.jqconsole {
+    padding: 10px;
+}
+.jqconsole-cursor {
+    background-color: gray;
+}
+.jqconsole-blurred .jqconsole-cursor {
+    background-color: #666;
+}
+.jqconsole-prompt {
+    color: #0d0;
+}
+.jqconsole-old-prompt {
+    color: #0b0;
+    font-weight: normal;
+}
+.jqconsole-input {
+    color: #dd0;
+}
+.jqconsole-old-input {
+    color: #bb0;
+    font-weight: normal;
+}
+.jqconsole-output {
+    color: white;
+} 

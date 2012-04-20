@@ -21,5 +21,3 @@ group :assets do
 end
 
 gem 'jquery-rails'
-
-gem 'live_console'
