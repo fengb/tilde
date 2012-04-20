@@ -1,14 +1,3 @@
-class ConvenienceStore
-  def self.[](key)
-    (@cache ||= {})[key]
-  end
-
-  def self.[]=(key, value)
-    (@cache ||= {})[key] = value
-  end
-end
-
-
 class TildeController < ApplicationController
   def command
     if request.post?
@@ -44,7 +33,6 @@ class TildeController < ApplicationController
       end while port_used?(p)
 
       session[:tilde_port] = p
-      ports.add(p)
     end
     session[:tilde_port]
   end
@@ -58,6 +46,8 @@ class TildeController < ApplicationController
   end
 
   def spawn(port)
+    ports.add(port)
+
     $stderr.puts "Spawning child on 127.0.0.1:#{port}"
 
     fork do
