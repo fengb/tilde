@@ -1,6 +1,4 @@
 class TildeController < ApplicationController
-  READ_MAX = 4096
-
   def command
     if request.post?
       # fork and wait for it to catch up
@@ -19,8 +17,7 @@ class TildeController < ApplicationController
 
   private
   def port
-    #session[:tilde_port] ||= (3000+rand(1000))
-    return 4000
+    session[:tilde_port] ||= 4000
   end
 
   def spawned?
@@ -40,8 +37,7 @@ class TildeController < ApplicationController
       while conn = server.accept
         begin
           # eval must occur in here for local vars to remain in scope
-          IO.select([conn])
-          payload = conn.read_nonblock(READ_MAX)
+          payload = conn.read
 
           $stderr = StringIO.new
           $stdout = StringIO.new
@@ -67,6 +63,7 @@ class TildeController < ApplicationController
   def communicate(port, message)
     TCPSocket.open '127.0.0.1', port do |socket|
       socket.puts message
+      socket.close_write
       socket.read
     end
   end
