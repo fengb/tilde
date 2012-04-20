@@ -4,17 +4,17 @@ class ApplicationController < ActionController::Base
   def command
     # TODO: implement me
     spawned = false
-    port = 3001
+    port = get_console_port
 
-    if !spawned
-      spawn(port)
-    end
+    spawn(port) if !spawned
     response = communicate(port)
     render :text => response
   end
 
   private
   def spawn(port)
+    $stderr.puts "Spawning child on 127.0.0.1:#{port}"
+
     fork do
       server = TCPServer.new('127.0.0.1', port)
       context = binding
@@ -49,6 +49,17 @@ class ApplicationController < ActionController::Base
   def communicate(port)
     # TODO: implement me
     "Hi"
+  end
+
+  def get_console_port(name = nil)
+    $stderr.print session[:tilde]
+    session[:tilde] ||= {}
+    session[:tilde][:consoles] ||= {}
+
+    unless session[:tilde][:consoles][name]
+      session[:tilde][:consoles][name] = (3000+rand(1000))
+    end
+    session[:tilde][:consoles][name]
   end
 
 end
