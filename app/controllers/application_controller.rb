@@ -69,10 +69,10 @@ class ApplicationController < ActionController::Base
   end
 
   def communicate(port, message)
-    s = TCPSocket.open '127.0.0.1', port
-    s.puts message
-
-    readall(s)
+    TCPSocket.open '127.0.0.1', port do |socket|
+      socket.puts message
+      readall(socket)
+    end
   end
 
   def get_console_port(name = nil)
