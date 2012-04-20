@@ -12,6 +12,12 @@ class TildeController < ApplicationController
     end
   end
 
+  # TODO: remove once zombie process are properly removed
+  def flush
+    `pkill #{$$}`
+    render :text => 'Success!'
+  end
+
   private
   def port
     session[:tilde_port] ||= (3000+rand(1000))
