@@ -42,12 +42,13 @@ class ApplicationController < ActionController::Base
           ret = eval(payload, context)
           $stderr.close
           $stdout.close
-          response = [$stderr.string, $stdout.string, ret.inspect].join('')
 
-          conn.print("Response: #{response}")
+          conn.print $stderr.string
+          conn.print $stdout.string
+          conn.print "=> #{ret.inspect}"
         rescue => e
-          conn.print ("Exception Encountered:\n")
-          conn.print e.message
+          conn.puts "#{e.class}: #{e.message}"
+          conn.puts "\t" + e.backtrace.join("\n\t")
         ensure
           conn.close
         end
