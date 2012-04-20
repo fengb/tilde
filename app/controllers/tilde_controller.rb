@@ -53,36 +53,47 @@ class TildeController < ApplicationController
       first_run = true
       server = TCPServer.new('127.0.0.1', port)
       context = binding
+      real_stderr = $stderr
+      real_stdout = $stdout
+
       while conn = server.accept
+        $stderr = StringIO.new
+        $stdout = StringIO.new
+
+        # eval must occur in here for local vars to remain in scope
         begin
-          # eval must occur in here for local vars to remain in scope
+          conn.print "Creating console on :#{port}\n" if first_run
+          first_run = false
+
           payload = conn.read
 
-          $stderr = StringIO.new
-          $stdout = StringIO.new
-          result = eval(payload, context)
-          $stderr.close
-          $stdout.close
+          out = begin
+                  result = eval(payload, context)
+                  "=> #{result.inspect}"
+                rescue StandardError, ScriptError => e
+                  lines = ["#{e.class}: #{e.message}"]
+                  lines.concat(filter_backtrace(e.backtrace))
+                  lines.join("\n\tfrom ")
+                end
 
-          conn.print "Creating console on :#{port}\n" if first_run
           conn.print $stderr.string
           conn.print $stdout.string
-          conn.print "=> #{result.inspect}"
-
-          first_run = false
-        rescue StandardError, ScriptError => e
-          conn.puts "#{e.class}: #{e.message}"
-          e.backtrace.each do |line|
-            conn.puts "\t" << line
-
-            # Rest of stacktrace lives beyond the eval line so we ignore them
-            break if line =~ /#{__FILE__.gsub('.', '\.').gsub('/', '\/')}.*eval/
-          end
+          conn.print out
         ensure
+          $stderr.close
+          $stdout.close
+          $stderr = real_stderr
+          $stdout = real_stdout
           conn.close
         end
       end
     end
+  end
+
+  # Remove the pieces beyond the eval line
+  def filter_backtrace(backtrace)
+    target = backtrace.find_index{|line| line =~ /#{__FILE__.gsub('.', '\.').gsub('/', '\/')}.*eval/ }
+    target ? backtrace[0..target] : backtrace
   end
 
   def communicate(port, message)
