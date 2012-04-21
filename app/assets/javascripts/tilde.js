@@ -5,11 +5,18 @@
 $(function () {
   var $tilde = $('#tilde');
   var tildeconsole = $tilde.jqconsole('', '>> ');
+
+  var specialCommands = {
+    "clear": function(){
+      tildeconsole.Reset();
+      startPrompt();
+    }
+  }
+
   var startPrompt = function () {
     tildeconsole.Prompt(true, function (input) {
-      if (input == "clear") {
-        tildeconsole.Reset();
-        startPrompt();
+      if (input in specialCommands) {
+        specialCommands[input]();
       } else {
         $.ajax({
           headers: {
