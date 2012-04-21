@@ -34,8 +34,8 @@ $(function () {
   startPrompt();
 
   var open = false;
-  $(document).keydown(function(e){
-    if (e.keyCode == 192) {
+  $(document).keydown(function(evt){
+    if (evt.which == 192) {
       open = !open
       $tilde.animate({
         top: open ? "0" : "-505"
