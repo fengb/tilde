@@ -31,8 +31,9 @@ $(function () {
             tildeconsole.Write(e.response + '\n', 'jqconsole-output');
             startPrompt();
           },
-          failure: function(e) {
-            tildeconsole.Write('There was an error with your request' + '\n', 'jqconsole-output');
+          error: function(e) {
+            tildeconsole.Write('There was an error with your request: ' + e.response + '\n', 'jqconsole-error');
+            startPrompt();
           }
         });
       }
@@ -43,11 +44,10 @@ $(function () {
   var open = false;
   $(document).keydown(function(evt){
     if (evt.which == $tilde.data('key')) {
-      open = !open
-      $tilde.animate({
-        top: open ? "0" : "-505"
-      });
-      tildeconsole.Focus();
+      $tilde.toggleClass('active');
+      if ($tilde.hasClass('active')) {
+        tildeconsole.Focus();
+      }
       return false;
     }
   });
