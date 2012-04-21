@@ -1,1 +1,8 @@
-<div id="tilde" data-command-url="<%= url_for :controller => 'tilde', :action => 'command' %>"></div>
+<% key = case key
+           when :backtick, :tilde then 192
+           else                        192  # default tilde: duh
+         end
+ %>
+<div id="tilde" data-command-url="<%= url_for :controller => 'tilde', :action => 'command' %>"
+                data-key="<%= key %>"
+                ></div>

@@ -35,7 +35,7 @@ $(function () {
 
   var open = false;
   $(document).keydown(function(evt){
-    if (evt.which == 192) {
+    if (evt.which == $tilde.data('key')) {
       open = !open
       $tilde.animate({
         top: open ? "0" : "-505"
