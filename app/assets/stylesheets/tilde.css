@@ -5,14 +5,9 @@
   position: absolute;
   font-family: monospace;
   font-size: 14px;
-  color: #ddd;
   width: 100%;
-  background-color: #000;
-  background-color: rgba(0,0,0,0.80);
-  border-bottom: 5px solid red;
   height: 80%;
   top: -80%;
-  box-sizing: border-box;
   -webkit-transition: top 0.5s ease-out;
   -moz-transition: top 0.5s ease-out;
   -o-transition: top 0.5s ease-out;
@@ -22,12 +17,13 @@
   top: 0;
 }
 
-#tilde .jqconsole { padding: 10px; }
+#tilde .jqconsole { padding: 10px; background-color: #000; background-color: rgba(0,0,0,0.80); color: #ddd; border-bottom: 5px solid red; }
+#tilde .jqconsole-blurred { opacity: 0.8; }
+#tilde .jqconsole-blurred .jqconsole-cursor { opacity: 0.5; }
 #tilde .jqconsole-cursor { background-color: gray; }
-#tilde .jqconsole-blurred .jqconsole-cursor { background-color: #666; }
 #tilde .jqconsole-prompt { color: #0d0; }
 #tilde .jqconsole-old-prompt { color: #0b0; font-weight: normal; }
 #tilde .jqconsole-input { color: #dd0; }
 #tilde .jqconsole-old-input { color: #bb0; font-weight: normal; }
 #tilde .jqconsole-output { white-space: pre-wrap; color: white; }
-#tilde .jqconsole-error { white-space: pre-wrap; color: red; }
+#tilde .jqconsole-error { white-space: pre-wrap; color: #f88; }
