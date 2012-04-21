@@ -1,0 +1,9 @@
+/*
+*/
+
+html, body {
+  background: #000 url('/assets/quake.jpg') 50% 0% no-repeat;
+  color: white;
+  margin: 0;
+  padding: 0;
+}
