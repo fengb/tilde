@@ -37,7 +37,7 @@ $(function () {
   $(document).keydown(function(e){
     if (e.keyCode == 192) {
       open = !open
-      $('tilde').animate({
+      $tilde.animate({
         top: open ? "0" : "-505"
       });
       tildeconsole.Focus();
